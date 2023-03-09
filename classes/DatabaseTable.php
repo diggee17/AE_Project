@@ -10,7 +10,7 @@ class DatabaseTable
         $query = 'SELECT * FROM `' . $this->table . '` WHERE `' . $field . '` = :value  ';
 
         $values = [
-            'value' => $value
+            'value' => $value,
         ];
 
         $stmt = $this->pdo->prepare($query);
@@ -66,11 +66,11 @@ class DatabaseTable
         $query = rtrim($query, ',');
 
         $query .= ' WHERE `' . $this->primaryKey . '` = :primaryKey';
-        /* echo $query . "<br> <br>";  
-echo $this->primaryKey . "primary key var <br> <br>";  */
+        /* echo $query . "<br> <br>";
+        echo $this->primaryKey . "primary key var <br> <br>";  */
         // Set the :primaryKey variable
         //   $values['primaryKey'] = $values['id'];  // ** wont alway be id as in book
-        $values['primaryKey'] = $values[$this->primaryKey];  // my fix
+        $values['primaryKey'] = $values[$this->primaryKey]; // my fix
         $values = $this->processDates($values);
 
         $stmt = $this->pdo->prepare($query);
@@ -98,7 +98,7 @@ echo $this->primaryKey . "primary key var <br> <br>";  */
         $query = rtrim($query, ',');
 
         $query .= ')';
-        //    echo "$query ".  "$$<br>"; 
+        //    echo "$query ".  "$$<br>";
 
         $values = $this->processDates($values);
 
@@ -129,22 +129,22 @@ echo $this->primaryKey . "primary key var <br> <br>";  */
      * need to figure out how to  address  join tables tutorsubject   OR student subject
      *************** Active only
      *   tested without the Where Active clause and it works.
-     * 
+     *
      */
 
     /* Note:  because the AE database fields all have the table name as part of the field.  I need to use a Switch statment or something to build the Select clause. The select clause depends $this->table (Tutor or  Student)a
-*/
+     */
 
-    public  function findAllWithSubjects()
+    public function findAllWithSubjects()
     {
         echo (" table is: " . $this->table);
         $query = 'SELECT t.TutorKey, t.TutorLastName,
-       t.TutorFirstName, 
-       t.TutorFirstName, 
-       t.TutorEmail, 
-       t.TutorCellPhone, 
+       t.TutorFirstName,
+       t.TutorFirstName,
+       t.TutorEmail,
+       t.TutorCellPhone,
         Subject.SubjectName, Subject.SubjectGrade
-        FROM `' . $this->table . '` as t INNER JOIN (Subject INNER JOIN TutorSubject ON Subject.SubjectKey = TutorSubject.SubjectKey) ON t.TutorKey = TutorSubject.TutorKey   
+        FROM `' . $this->table . '` as t INNER JOIN (Subject INNER JOIN TutorSubject ON Subject.SubjectKey = TutorSubject.SubjectKey) ON t.TutorKey = TutorSubject.TutorKey
         WHERE t.TutorStatus = "Active" ';
 
         $stmt = $this->pdo->prepare($query);
@@ -167,11 +167,11 @@ echo $this->primaryKey . "primary key var <br> <br>";  */
             }
             //$articles[$article_id]['SubjectNames'][] = $row['SubjectName'];
             //  $articles[$article_id]['SubjectLevels'][] = $row['SubjectLevel'];
-            $articles[$article_id]['SubjectNames'][] =  $row['SubjectName'] . " " . $row['SubjectGrade'];
+            $articles[$article_id]['SubjectNames'][] = $row['SubjectName'] . " " . $row['SubjectGrade'];
 
             $previous_id = $article_id;
         }
-        // var_dump($articles); 
+        // var_dump($articles);
         // exit;  /******** */
         return $articles;
     }
@@ -181,14 +181,14 @@ echo $this->primaryKey . "primary key var <br> <br>";  */
      * have primary key as this->primaryKey
      * need to figure out how to  address  join tables tutorsubject   OR student subject
      * Active only
-     * 
-     * 
+     *
+     *
      */
-    public  function getSubjectsbyID($key)
+    public function getSubjectsbyID($key)
     {
 
         $query = 'SELECT t.TutorLastName, t.TutorFirstName,  Subject.SubjectName FROM Tutor as t INNER JOIN (Subject INNER JOIN TutorSubject ON Subject.SubjectKey = TutorSubject.SubjectKey) ON t.TutorKey = TutorSubject.TutorKey
-        
+
         WHERE t.TutorKey= :key and t.TutorStatus = "Active" ';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':key', $key, PDO::PARAM_INT);
