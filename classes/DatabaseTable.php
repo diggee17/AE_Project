@@ -1,4 +1,5 @@
 <?php
+// added for version control 
 class DatabaseTable
 {
     public function __construct(private PDO $pdo, private string $table, private string $primaryKey)
