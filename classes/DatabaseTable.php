@@ -23,7 +23,7 @@ class DatabaseTable
     public function findAll()
     {
         echo ($this->table);
-        $stmt = $this->pdo->prepare('SELECT * FROM `' . $this->table . '`limit 10  ');
+        $stmt = $this->pdo->prepare('SELECT * FROM ' . $this->table );
         $stmt->execute();
         //  print_r($stmt->fetchAll()) ;  echo " fetch <br>";
         return $stmt->fetchAll();
