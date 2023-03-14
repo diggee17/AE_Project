@@ -3,7 +3,11 @@
 <?php var_dump($tutor);  ?>
  <?php endforeach; ?>
  -->
+ <?php
+ $paginator = new Paginator($_GET['page'] ?? 1, 6, $totaltutors);
 
+$tutors = getPage($conn, $paginator->limit, $paginator->offset);
+?>
 
  <div class="container mt-3">
   <p>IN container</p>
@@ -61,4 +65,6 @@
             <?php endforeach; ?>
         </tbody>
     </table> 
+    <?php require '../includes/pagination.php'; ?>
+
     </div>

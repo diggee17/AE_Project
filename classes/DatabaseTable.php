@@ -154,27 +154,27 @@ class DatabaseTable
         //  This fetch give Assoc array and an array indexed by numbers $results = $stmt->fetchAll();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Consolidate the article records into a single element for each article,
+        // Consolidate the item records into a single element for each item,
         // putting the category names into an array
-        $articles = [];
+        $items = [];
 
         $previous_id = null;
 
         foreach ($results as $row) {
-            $article_id = $row['TutorKey'];
-            if ($article_id != $previous_id) {
+            $item_id = $row['TutorKey'];
+            if ($item_id != $previous_id) {
                 $row['SubjectNames'] = [];
-                $articles[$article_id] = $row;
+                $items[$item_id] = $row;
             }
-            //$articles[$article_id]['SubjectNames'][] = $row['SubjectName'];
-            //  $articles[$article_id]['SubjectLevels'][] = $row['SubjectLevel'];
-            $articles[$article_id]['SubjectNames'][] = $row['SubjectName'] . " " . $row['SubjectGrade'];
+            //$items[$item_id]['SubjectNames'][] = $row['SubjectName'];
+            //  $items[$item_id]['SubjectLevels'][] = $row['SubjectLevel'];
+            $items[$item_id]['SubjectNames'][] = $row['SubjectName'] . " " . $row['SubjectGrade'];
 
-            $previous_id = $article_id;
+            $previous_id = $item_id;
         }
-        // var_dump($articles);
+        // var_dump($items);
         // exit;  /******** */
-        return $articles;
+        return $items;
     }
 
     /** Get the recored based on the primary key along with associated subjects, if any
@@ -187,7 +187,6 @@ class DatabaseTable
      */
     public function getSubjectsbyID($key)
     {
-
         $query = 'SELECT t.TutorLastName, t.TutorFirstName,  Subject.SubjectName FROM Tutor as t INNER JOIN (Subject INNER JOIN TutorSubject ON Subject.SubjectKey = TutorSubject.SubjectKey) ON t.TutorKey = TutorSubject.TutorKey
 
         WHERE t.TutorKey= :key and t.TutorStatus = "Active" ';
@@ -200,4 +199,61 @@ class DatabaseTable
         echo " fetch <br>";
         return $stmt->fetchAll();
     }
+    /**
+     * Get a page of articles
+     *
+     * @param object $conn Connection to the database
+     * @param integer $limit Number of records to return
+     * @param integer $offset Number of records to skip
+     * @return array An associative array of the page of records
+     */
+    
+public function getPage($pdo, $limit, $offset)
+{
+    $TutorStatus = 'Where TutorStatus = "Active"' ;
+ // $condition = $TutorStatus ? ' WHERE TutorStatus IS NOT NULL' : '';
+
+$query = "SELECT t.TutorKey, t.TutorLastName, t.TutorFirstName, t.TutorFirstName, t.TutorEmail, t.TutorCellPhone, Subject.SubjectName, Subject.SubjectGrade FROM ( Select * From Tutor
+$TutorStatus
+order by TutorKey
+LIMIT :limit 
+OFFSET :offset) as t
+Left JOIN TutorSubject ON t.TutorKey =TutorSubject.TutorKey Left Join subject On TutorSubject.SubjectKey = Subject.SubjectKey";
+
+echo $query;  
+
+    $stmt = $pdo->prepare($query);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //$results = $stmt->fetchAll();
+    //var_dump($results);    
+    echo "getpage". "<br>" ;
+    //    exit;   // *******
+
+    // Consolidate the item records into a single element for each item,
+        // putting the category names into an array
+        $items = [];
+
+        $previous_id = null;
+
+        foreach ($results as $row) {
+            $item_id = $row['TutorKey'];
+            if ($item_id != $previous_id) {
+                $row['SubjectNames'] = [];
+                $items[$item_id] = $row;
+            }
+            //$items[$item_id]['SubjectNames'][] = $row['SubjectName'];
+            //  $items[$item_id]['SubjectLevels'][] = $row['SubjectLevel'];
+            $items[$item_id]['SubjectNames'][] = $row['SubjectName'] . " " . $row['SubjectGrade'];
+
+            $previous_id = $item_id;
+        }
+         var_dump($items);
+         exit;  /******** */
+        return $items;
+    } 
 }
