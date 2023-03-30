@@ -3,7 +3,7 @@
   <head>
   <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>AE Database Demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" >
   </head>
    <header>
@@ -64,26 +64,6 @@
         </div>
       </nav>
 
-    <nav class="nav nav-pills nav-fill">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-    <li class="nav-item">
-        <a href="index.php">Home</a>
-    </li>
-
-    <li class="nav-item">
-        <a href="index.php?controller=admin&amp;action=list">Admin List</a>
-    </li>
-    <li class="nav-item">
-        <a href="index.php?controller=admin&amp;action=edit">Add a New Admin</a>
-    </li>
-    <li class="nav-item">
-        <a href="index.php?controller=tutor&amp;action=list">Tutot List</a>
-    </li>
-    <li class="nav-item">
-        <a href="index.php?controller=tutor&amp;action=edit">Add a New Tutor</a>
-    </li>
-    </ul>
-  </nav>
 
   <main> 
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
