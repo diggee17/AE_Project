@@ -25,10 +25,13 @@ class TutorController {
 
 	public function list() {
 	   // $result = $this->tutorsTable->findAll();
-	    $result = $this->tutorsTable->findAllWithSubjects();
+	  //  $result = $this->tutorsTable->findAllWithSubjects();
+	  $pg = $_GET['page'] ?? '1';
+	  $offset = ($pg-1) * 4;
+	  var_dump($offset);
+		$result = $this->tutorsTable->getPage( 4, $offset);
 		$tutors = $result;
 
-	 
 	    $title = 'AE Tutor List';
 
 	    $totaltutors = $this->tutorsTable->total();

@@ -12,19 +12,22 @@ function loadTemplate($templateFileName, $variables = []) {
 
 try {
     include __DIR__ . '/../includes/DatabaseConnection.php';
-    include __DIR__ . '/../classes/DatabaseTable.php';
+    include  __DIR__ . '/../classes/DatabaseTable.php';
     include __DIR__ . '/../controllers/adminController.php';
     include __DIR__ . '/../controllers/TutorController.php';
     include __DIR__ . '/../controllers/AuthorController.php';
 
+  echo "got here 1";
     $adminsTable = new DatabaseTable($pdo, 'admin', 'AdminID');
     $tutorsTable = new DatabaseTable($pdo, 'tutor', 'TutorKey');
     $authorsTable = new DatabaseTable($pdo, 'author', 'id');
 
     $action = $_GET['action'] ?? 'home';
     $controllerName = $_GET['controller'] ?? 'admin';
+   
 
-print_r($controllerName);
+print_r($controllerName); 
+
     if ($controllerName === 'admin') {
         $controller = new AdminController($adminsTable, $authorsTable);
   echo "got here 2";

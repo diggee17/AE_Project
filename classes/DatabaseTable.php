@@ -141,7 +141,6 @@ class DatabaseTable
         echo (" table is: " . $this->table);
         $query = 'SELECT t.TutorKey, t.TutorLastName,
        t.TutorFirstName,
-       t.TutorFirstName,
        t.TutorEmail,
        t.TutorCellPhone,
         Subject.SubjectName, Subject.SubjectGrade
@@ -202,27 +201,27 @@ class DatabaseTable
     /**
      * Get a page of articles
      *
-     * @param object $conn Connection to the database
      * @param integer $limit Number of records to return
      * @param integer $offset Number of records to skip
      * @return array An associative array of the page of records
      */
     
-public function getPage($pdo, $limit, $offset)
+public function getPage($limit, $offset)
 {
-    $TutorStatus = 'Where TutorStatus = "Active"' ;
+  //  $TutorStatus = 'Where TutorStatus = "Active"' ;
  // $condition = $TutorStatus ? ' WHERE TutorStatus IS NOT NULL' : '';
+  $condition =  '';
 
-$query = "SELECT t.TutorKey, t.TutorLastName, t.TutorFirstName, t.TutorFirstName, t.TutorEmail, t.TutorCellPhone, Subject.SubjectName, Subject.SubjectGrade FROM ( Select * From Tutor
-$TutorStatus
+$query = "SELECT t.TutorKey, t.TutorLastName, t.TutorFirstName, t.TutorFirstName, t.TutorEmail, t.TutorCellPhone, Subject.SubjectName, Subject.SubjectLevel FROM ( Select * From Tutor
+$condition
 order by TutorKey
 LIMIT :limit 
 OFFSET :offset) as t
 Left JOIN TutorSubject ON t.TutorKey =TutorSubject.TutorKey Left Join subject On TutorSubject.SubjectKey = Subject.SubjectKey";
 
-echo $query;  
+//echo $query;  
 
-    $stmt = $pdo->prepare($query);
+    $stmt = $this->pdo->prepare($query);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
@@ -230,8 +229,8 @@ echo $query;
 
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     //$results = $stmt->fetchAll();
-    //var_dump($results);    
-    echo "getpage". "<br>" ;
+   //var_dump($results);    
+  //  echo "getpage". "<br> <br> <br>> "  ;
     //    exit;   // *******
 
     // Consolidate the item records into a single element for each item,
@@ -239,21 +238,31 @@ echo $query;
         $items = [];
 
         $previous_id = null;
+        $previous_level = null;
+        $previous_sl = null;
 
         foreach ($results as $row) {
             $item_id = $row['TutorKey'];
+            $sl = $row['SubjectName'] . $row['SubjectLevel'];
+ // echo($row['TutorLastName'] . $sl  . "  "  .  $previous_sl);
             if ($item_id != $previous_id) {
-                $row['SubjectNames'] = [];
+                // $row['SubjectNames'] = [];
+                $row['SubjectLevels'] = [];
                 $items[$item_id] = $row;
+
+                
             }
-            //$items[$item_id]['SubjectNames'][] = $row['SubjectName'];
-            //  $items[$item_id]['SubjectLevels'][] = $row['SubjectLevel'];
-            $items[$item_id]['SubjectNames'][] = $row['SubjectName'] . " " . $row['SubjectGrade'];
+            if ( ( $sl != "") & $sl != $previous_sl) { 
+                // $row['SubjectNames'] = [];
+            
+                $items[$item_id]['SubjectNames'][] = $row['SubjectName'] . " " . $row['SubjectLevel'];
+            }
 
             $previous_id = $item_id;
+           //$previous_level = $row['SubjectLevel'];
+           $previous_sl = $sl;
         }
-         var_dump($items);
-         exit;  /******** */
+  //       var_dump($items);
         return $items;
     } 
 }
